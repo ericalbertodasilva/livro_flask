@@ -1,5 +1,6 @@
 import os
 import random, string
+from decouple import config as cf
 
 class Config(object):
     CSRF_ENABLED = True
@@ -36,4 +37,4 @@ app_config = {
     'production': ProductionConfig()
 }
 
-app_active = os.getenv('FLASK_ENV') or 'default'
+app_active = cf('FLASK_ENV') or 'default'
