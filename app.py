@@ -3,6 +3,8 @@ from flask import Flask, request, redirect, render_template
 
 from config import app_config, app_active
 
+from admin.Admin import start_views
+
 from controller.User import UserController
 
 config = app_config[app_active]
@@ -11,14 +13,18 @@ from flask_sqlalchemy import SQLAlchemy
 
 def create_app(config_name):
     app = Flask(__name__, template_folder='templates')
+
     app.secret_key = config.SECRET
     app.config.from_object(app_config[config_name])
     app.config.from_pyfile('config.py')
-
     app.config['SQLALCHEMY_DATABASE_URI'] = config.SQLALCHEMY_DATABASE_URI
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['FLASK_ADMIN_SWATCH'] = 'paper'
+
     db = SQLAlchemy(config.APP)
     db.init_app(app)
+
+    start_views(app,db)
 
     @app.route('/')
     def index():
