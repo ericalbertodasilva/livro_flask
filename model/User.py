@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
+from sqlalchemy import func
 from passlib.hash import pbkdf2_sha256
 
 from config import app_config, app_active
@@ -54,5 +55,15 @@ class User(db.Model):
         except ValueError:
             return False
     
+    def get_total_users(self):
+        try:
+            res = db.session.query(func.count(User.id)).first()
+        except Exception as e:
+            res = []
+            print(e)
+        finally:
+            db.session.close()
+            return res
+
     def __repr__(self):
         return '%s - %s' % (self.id, self.username)

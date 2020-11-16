@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, request, redirect, render_template
+from flask_bootstrap import Bootstrap
 
 from config import app_config, app_active
 
@@ -23,6 +24,7 @@ def create_app(config_name):
     app.config['FLASK_ADMIN_SWATCH'] = 'paper'
 
     db = SQLAlchemy(config.APP)
+    Bootstrap(app)
     db.init_app(app)
 
     start_views(app,db)
@@ -33,7 +35,7 @@ def create_app(config_name):
     
     @app.route('/login/')
     def login():
-        return 'Aqui entrará a tela de login'
+        return render_template('login.html', message="Essa é uma mensagem que veio da rota")
     
     @app.route('/login/', methods=['POST'])
     def login_post():
