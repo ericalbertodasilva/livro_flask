@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, redirect, render_template, Response, json
 from flask_bootstrap import Bootstrap
 
 from config import app_config, app_active
@@ -26,6 +26,13 @@ def create_app(config_name):
     db = SQLAlchemy(config.APP)
     Bootstrap(app)
     db.init_app(app)
+
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        return response
 
     start_views(app,db)
 
@@ -90,5 +97,27 @@ def create_app(config_name):
         else:
             message = "Não deletado"
         return message
+
+    @app.route('/products/', methods=['GET'])
+    @app.route('/products/<limit>', methods=['GET'])
+    def get_products(limit=None):
+        header = {}
+        product = ProductController()
+        response = product.get_products(limit=limit)
+        return Response(json.dumps(response, ensure_ascii=False), mimetype='application/json'), response['status'], header
+
+    @app.route('/product/<product_id>', methods=['GET'])
+    def get_product(product_id):
+        header = {}
+        product = ProductController()
+        response = product.get_product_by_id(product_id = product_id)
+        return Response(json.dumps(response, ensure_ascii=False), mimetype='application/json'), response['status'], header
+
+    @app.route('/user/<user_id>', methods=['GET'])
+    def get_user_profile(user_id):
+        header = {}
+        user = UserController()
+        response = user.get_user_by_id(user_id=user_id)
+        return Response(json.dumps(response, ensure_ascii=False), mimetype='application/json'), response['status'], header
 
     return app    

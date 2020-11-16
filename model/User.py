@@ -29,10 +29,14 @@ class User(db.Model):
         return ''
 
     def get_user_by_id(self):
-        """
-        Construiremos essa função capítulos depois
-        """
-        return ''
+        try:
+            res = db.session.query(User).filter(User.id==self.id).first()
+        except Exception as e:
+            res = None
+            print(e)
+        finally:
+            db.session.close()
+            return res
 
     def update(self, obj):
         """
@@ -64,6 +68,7 @@ class User(db.Model):
         finally:
             db.session.close()
             return res
+
 
     def __repr__(self):
         return '%s - %s' % (self.id, self.username)
