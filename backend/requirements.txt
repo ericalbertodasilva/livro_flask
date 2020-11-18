@@ -7,8 +7,9 @@ Flask-Admin
 Flask-Login
 mysqlclient
 Flask-MySQLdb
+Flask-Login
 python-decouple
-bcrypt
 passlib
 pyjwt
 python-dotenv
+bcrypt
